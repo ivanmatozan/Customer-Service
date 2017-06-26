@@ -6,8 +6,6 @@ use Psr\Container\ContainerInterface;
 
 /**
  * Base controller
- *
- * @package App\Controllers
  */
 abstract class Controller
 {
@@ -29,7 +27,6 @@ abstract class Controller
      */
     public function __get(string $property)
     {
-        // TODO: what if this is a false?
         if ($this->container->has($property)) {
             return $this->container->get($property);
         }

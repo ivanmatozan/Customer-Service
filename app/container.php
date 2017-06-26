@@ -12,3 +12,8 @@ $container['view'] = function ($container) {
 
     return $twig;
 };
+
+// Validator
+$container['validator'] = function () {
+    return new App\Validation\Validator();
+};
