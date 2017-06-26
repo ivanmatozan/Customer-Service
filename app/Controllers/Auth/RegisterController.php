@@ -53,7 +53,7 @@ class RegisterController extends Controller
         User::create([
             'name' => $request->getParam('name'),
             'email' => $request->getParam('email'),
-            'password' => password_hash($request->getParam('email'), PASSWORD_DEFAULT),
+            'password' => password_hash($request->getParam('password'), PASSWORD_DEFAULT),
             'role_id' => Role::where('name', 'user')->first()->id
         ]);
 
