@@ -2,6 +2,11 @@
 
 $container = $app->getContainer();
 
+// Authentication
+$container['auth'] = function () {
+    return new App\Services\Authentication();
+};
+
 // Twig
 $container['view'] = function ($container) {
     $twig = new \Slim\Views\Twig(__DIR__ . '/../resources/views');
@@ -9,6 +14,9 @@ $container['view'] = function ($container) {
         $container->router,
         $container->request->getUri()
     ));
+
+    // Add user as global variable
+    $twig->getEnvironment()->addGlobal('user', $container->auth->getUser());
 
     return $twig;
 };
