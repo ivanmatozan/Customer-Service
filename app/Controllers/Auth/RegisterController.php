@@ -57,6 +57,8 @@ class RegisterController extends Controller
             'role_id' => Role::where('name', 'user')->first()->id
         ]);
 
+        $this->flash->addMessage('success', 'Account successfully created. Please login.');
+
         return $response->withRedirect($this->router->pathFor('home'));
     }
 }

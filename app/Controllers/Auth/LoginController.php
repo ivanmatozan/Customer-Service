@@ -46,6 +46,8 @@ class LoginController extends Controller
         $auth = $this->auth->attempt($request->getParam('email'), $request->getParam('password'));
 
         if (!$auth) {
+            $this->flash->addMessage('error', 'Unsuccessful login, email or password do not match.');
+
             return $response->withRedirect($this->router->pathFor('auth.login'));
         }
 
