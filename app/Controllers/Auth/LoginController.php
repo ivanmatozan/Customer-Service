@@ -32,7 +32,7 @@ class LoginController extends Controller
      */
     public function postLogin(Request $request, Response $response)
     {
-        $validator = $this->validator->validate($request, [
+        $validator = $this->validator->validate($request->getParams(), [
             'email' => v::notEmpty()->email(),
             'password' => v::notEmpty()
         ]);

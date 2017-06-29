@@ -21,7 +21,9 @@ $container['view'] = function ($container) {
     ));
 
     // Add user as global variable
-    $twig->getEnvironment()->addGlobal('user', $container->auth->getUser());
+    $twig->getEnvironment()->addGlobal('auth', [
+        'user' => $container->auth->getUser()
+    ]);
 
     // Add flash messages as global variable
     $twig->getEnvironment()->addGlobal('flash', $container->flash->getMessages());

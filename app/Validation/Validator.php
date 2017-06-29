@@ -17,15 +17,15 @@ class Validator
     /**
      * Check form data with validation rules
      *
-     * @param Request $request
+     * @param array $data Form data
      * @param array $rules Rules to check
      * @return Validator
      */
-    public function validate(Request $request, array $rules): Validator
+    public function validate(array $data, array $rules): Validator
     {
         foreach ($rules as $input => $rule) {
             try {
-                $rule->setName(ucfirst($input))->assert($request->getParam($input));
+                $rule->setName(ucfirst($input))->assert($data[$input]);
             } catch (NestedValidationException $exception) {
                 $this->errors[$input] = $exception->getMessages();
             }

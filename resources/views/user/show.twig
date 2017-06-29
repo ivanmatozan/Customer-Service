@@ -1,0 +1,54 @@
+{% extends 'templates/app.twig' %}
+
+{% block title %}User management{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>User management</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <a href="{{ path_for('user.create') }}" class="btn btn-primary pull-right">Create user</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Created at</th>
+                            <th>Updated at</th>
+                            <th colspan="2">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ user.name }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.role.name }}</td>
+                                <td>{{ user.created_at }}</td>
+                                <td>{{ user.updated_at }}</td>
+                                <td><a href="{{ path_for('user.edit', {id: user.id}) }}">Edit</a></td>
+                                <td><a href="{{ path_for('user.delete', {id: user.id}) }}">Delete</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

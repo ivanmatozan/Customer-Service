@@ -34,7 +34,7 @@ class RegisterController extends Controller
     public function postRegister(Request $request, Response $response)
     {
         // Validate form data
-        $validator = $this->validator->validate($request, [
+        $validator = $this->validator->validate($request->getParams(), [
             'name' => v::notEmpty()->alpha(),
             'email' => v::notEmpty()->email()->emailAvailable(),
             'password' => v::notEmpty()->length(6, null),
