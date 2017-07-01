@@ -36,11 +36,11 @@ $capsule->bootEloquent();
 Respect\Validation\Validator::with('App\\Validation\\Rules\\');
 
 // Container
-require __DIR__ . '/../app/container.php';
+require __DIR__ . '/container.php';
 
 // Attach Middleware
 $app->add(new \App\Middleware\ValidationErrorsMiddleware($container));
 $app->add(new \App\Middleware\OldFormDataMiddleware($container));
 
 // Routes
-require __DIR__ . '/../app/routes.php';
+require __DIR__ . '/routes.php';
