@@ -41,7 +41,7 @@ class Authentication
     public function getUser()
     {
         if ($this->isLogged()) {
-            return User::find($_SESSION['user_id']);
+            return User::with('role')->find($_SESSION['user_id']);
         }
     }
 
