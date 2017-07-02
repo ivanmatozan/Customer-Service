@@ -169,9 +169,11 @@ class UserController extends Controller
      */
     public function confirmDelete(Request $request, Response $response, $args)
     {
-        $userId = $args['id'];
-
-        return $this->view->render($response, 'user/confirm-delete.twig', compact('userId'));
+        return $this->view->render($response, 'templates/confirmation.twig', [
+            'id' => $args['id'],
+            'routeName' => 'user.delete',
+            'message' => 'Are you sure that you want to delete user?'
+        ]);
     }
 
     /**
