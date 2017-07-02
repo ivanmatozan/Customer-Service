@@ -1,0 +1,56 @@
+{% extends 'templates/app.twig' %}
+
+{% block title %}Questions{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Questions</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <a href="{{ path_for('question.create') }}" class="btn btn-primary pull-right">Create question</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs">
+                <li role="presentation"  class="{% if activeTab == 'all' %}active{% endif %}">
+                    <a href="{{ path_for('question.user-questions') }}">All</a>
+                </li>
+                <li role="presentation" class="{% if activeTab == 'open' %}active{% endif %}">
+                    <a href="{{ path_for('question.user-questions', {tab: 'open'}) }}">Open</a>
+                </li>
+                <li role="presentation" class="{% if activeTab == 'closed' %}active{% endif %}">
+                    <a href="{{ path_for('question.user-questions', {tab: 'closed'}) }}">Closed</a>
+                </li>
+            </ul>
+            {% if questions is not empty %}
+                {% for question in questions %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">{{ question.subject }}</div>
+                        <div class="panel-body">{{ question.text }}</div>
+                        <div class="panel-footer">
+                            <a href="{{ path_for('question.edit', {id: question.id}) }}" class="btn btn-default">
+                                Edit
+                            </a>
+                            {#<a href="{{ path_for('question.delete', {id: question.id}) }}" class="btn btn-danger">#}
+                                {#Delete#}
+                            {#</a>#}
+                            <a href="{{ path_for('question.close', {id: question.id}) }}" class="btn btn-default">
+                                Close
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="well">You don't have any questions.</div>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

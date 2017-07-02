@@ -17,3 +17,14 @@ $app->get('/users/edit/{id}', 'App\Controllers\UserController:getEdit')->setName
 $app->post('/users/edit/{id}', 'App\Controllers\UserController:postEdit');
 $app->get('/users/delete/{id}', 'App\Controllers\UserController:confirmDelete')->setName('user.delete');
 $app->post('/users/delete/{id}', 'App\Controllers\UserController:delete');
+
+$app->get('/questions/all[/{tab}]', 'App\Controllers\QuestionController:allQuestions')->setName('question.all-questions');
+$app->get('/questions/list[/{tab}]', 'App\Controllers\QuestionController:userQuestions')->setName('question.user-questions');
+$app->get('/questions/create', 'App\Controllers\QuestionController:getCreate')->setName('question.create');
+$app->post('/questions/create', 'App\Controllers\QuestionController:postCreate');
+$app->get('/questions/edit/{id}', 'App\Controllers\QuestionController:getEdit')->setName('question.edit');
+$app->post('/questions/edit/{id}', 'App\Controllers\QuestionController:postEdit');
+//$app->get('/questions/delete/{id}', 'App\Controllers\QuestionController:confirmDelete')->setName('question.delete');
+//$app->post('/questions/delete/{id}', 'App\Controllers\QuestionController:delete');
+$app->get('/questions/close/{id}', 'App\Controllers\QuestionController:confirmClose')->setName('question.close');
+$app->post('/questions/close/{id}', 'App\Controllers\QuestionController:close');

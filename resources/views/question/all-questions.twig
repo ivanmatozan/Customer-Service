@@ -1,0 +1,42 @@
+{% extends 'templates/app.twig' %}
+
+{% block title %}Questions{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Questions</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs">
+                <li role="presentation"  class="{% if activeTab == 'all' %}active{% endif %}">
+                    <a href="{{ path_for('question.all-questions') }}">All</a>
+                </li>
+                <li role="presentation" class="{% if activeTab == 'open' %}active{% endif %}">
+                    <a href="{{ path_for('question.all-questions', {tab: 'open'}) }}">Open</a>
+                </li>
+                <li role="presentation" class="{% if activeTab == 'closed' %}active{% endif %}">
+                    <a href="{{ path_for('question.all-questions', {tab: 'closed'}) }}">Closed</a>
+                </li>
+            </ul>
+            {% if questions is not empty %}
+                {% for question in questions %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">{{ question.subject }}</div>
+                        <div class="panel-body">{{ question.text }}</div>
+                        <div class="panel-footer">
+
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="well">There is no questions.</div>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

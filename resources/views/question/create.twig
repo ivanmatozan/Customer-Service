@@ -1,0 +1,39 @@
+{% extends 'templates/app.twig' %}
+
+{% block title %}Create question{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Create question</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <form action="{{ path_for('question.create') }}" method="post" class="form">
+                <div class="form-group {{ validationErrors.subject ? 'has-error' : '' }}">
+                    <label for="subject">Name</label>
+                    <input type="text" id="subject" name="subject" class="form-control" value="{{ oldData.subject }}">
+                    {% if validationErrors.subject %}
+                        <span class="help-block">{{ validationErrors.subject | first }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-group {{ validationErrors.question ? 'has-error' : '' }}">
+                    <label for="question">Question</label>
+                    <textarea id="question" name="question" class="form-control"
+                              rows="8">{{ oldData.question }}</textarea>
+                    {% if validationErrors.question %}
+                        <span class="help-block">{{ validationErrors.question | first }}</span>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-default">Create</button>
+                <a href="{{ path_for('question.user-questions') }}" class="btn btn-danger pull-right">Cancel</a>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
