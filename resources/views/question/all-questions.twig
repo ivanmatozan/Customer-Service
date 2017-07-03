@@ -29,7 +29,7 @@
                         <div class="panel-heading">{{ question.subject }}</div>
                         <div class="panel-body">{{ question.text }}</div>
                         <div class="panel-footer">
-
+                            <a href="{{ path_for('question.show', {id: question.id}) }}" class="btn btn-default">Open</a>
                         </div>
                     </div>
                 {% endfor %}

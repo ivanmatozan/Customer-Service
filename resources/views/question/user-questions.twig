@@ -44,6 +44,9 @@
                             <a href="{{ path_for('question.close', {id: question.id}) }}" class="btn btn-default">
                                 Close
                             </a>
+                            <a href="{{ path_for('question.show', {id: question.id}) }}" class="btn btn-default">
+                                Open
+                            </a>
                         </div>
                     </div>
                 {% endfor %}

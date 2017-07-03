@@ -1,0 +1,43 @@
+{% extends 'templates/app.twig' %}
+
+{% block title %}Question{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div>Author: {{ question.user.name }}</div>
+                    <div>Subject: <strong>{{ question.subject }}</strong></div>
+                </div>
+                <div class="panel-body">{{ question.text }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            {% for response in question.responses %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div>Author: {{ response.user.name }}</div>
+                    </div>
+                    <div class="panel-body">{{ response.text }}</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <a href="#" class="btn btn-default">
+                Reply
+            </a>
+            <a href="{{ path_for('question.close', {id: question.id}) }}" class="btn btn-success">
+                Mark as resolved
+            </a>
+        </div>
+    </div>
+
+{% endblock %}

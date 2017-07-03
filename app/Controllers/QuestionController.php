@@ -273,4 +273,19 @@ class QuestionController extends Controller
 
         return $response->withRedirect($this->router->pathFor('question.user-questions'));
     }
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return mixed
+     */
+    public function show(Request $request, Response $response, array $args)
+    {
+        $question = Question::with(['responses' => function ($query) {
+            $query->orderBy('created_at', 'asc');
+        }])->find($args['id']);
+
+        return $this->view->render($response, 'question/show.twig', compact('question'));
+    }
 }

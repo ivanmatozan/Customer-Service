@@ -28,3 +28,4 @@ $app->post('/questions/edit/{id}', 'App\Controllers\QuestionController:postEdit'
 //$app->post('/questions/delete/{id}', 'App\Controllers\QuestionController:delete');
 $app->get('/questions/close/{id}', 'App\Controllers\QuestionController:confirmClose')->setName('question.close');
 $app->post('/questions/close/{id}', 'App\Controllers\QuestionController:close');
+$app->get('/questions/show/{id}', 'App\Controllers\QuestionController:show')->setName('question.show');
