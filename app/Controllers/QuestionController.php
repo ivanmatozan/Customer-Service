@@ -13,76 +13,42 @@ use Respect\Validation\Validator as v;
 class QuestionController extends Controller
 {
     /**
-     * Display user questions
+     * Display question list
      *
      * @param Request $request
      * @param Response $response
-     * @param array $args
-     * @return mixed
      */
-    public function userQuestions(Request $request, Response $response, array $args)
+    public function list(Request $request, Response $response)
     {
-        // Authenticated user
-        $user = $this->auth->getUser();
+        // Authenticated user role
+        $userRole = $this->auth->getUser()->role->name;
 
-        // Set default active tab
-        $activeTab = 'all';
-
-        // Get question Query builder
-        $questionsQB = $user->questions();
-
-        if (!empty($args)) {
-            switch ($args['tab']) {
-                case 'open':
-                    $activeTab = 'open';
-                    $questionsQB->where('closed', false);
-                    break;
-                case 'closed':
-                    $activeTab = 'closed';
-                    $questionsQB->where('closed', true);
-                    break;
-            }
+        // Query question depending on user role
+        if ($userRole === 'admin') {
+            $questionsQB = Question::query();
+        } else {
+            $questionsQB = Question::whereHas('user.role', function ($query) use ($userRole) {
+                $query->where('role.name', $userRole);
+            });
         }
 
-        // Query for questions
-        $questions = $questionsQB->orderBy('updated_at', 'desc')->get();
-
-        return $this->view->render($response, 'question/user-questions.twig', compact('questions', 'activeTab'));
-    }
-
-    /**
-     * Display all questions
-     *
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return mixed
-     */
-    public function allQuestions(Request $request, Response $response, array $args)
-    {
-        // Set default active tab
-        $activeTab = 'all';
-
-        // Get question Query builder
-        $questionsQB = Question::query();
-
-        if (!empty($args)) {
-            switch ($args['tab']) {
-                case 'open':
-                    $activeTab = 'open';
-                    $questionsQB->where('closed', false);
-                    break;
-                case 'closed':
-                    $activeTab = 'closed';
-                    $questionsQB->where('closed', true);
-                    break;
-            }
+        // Switch tabs
+        switch ($request->getParam('tab', 'all')) {
+            case 'open':
+                $activeTab = 'open';
+                $questionsQB->where('closed', false);
+                break;
+            case 'closed':
+                $activeTab = 'closed';
+                $questionsQB->where('closed', true);
+                break;
+            default:
+                $activeTab = 'all';
         }
 
-        // Query for questions
-        $questions = $questionsQB->orderBy('updated_at', 'desc')->get();
+        $questions = $questionsQB->orderBy('closed', 'asc')->latest()->get();
 
-        return $this->view->render($response, 'question/all-questions.twig', compact('questions', 'activeTab'));
+        return $this->view->render($response, 'question/list.twig', compact('questions', 'activeTab'));
     }
 
     /**
@@ -90,7 +56,6 @@ class QuestionController extends Controller
      *
      * @param Request $request
      * @param Response $response
-     * @return mixed
      */
     public function getCreate(Request $request, Response $response)
     {
@@ -102,7 +67,6 @@ class QuestionController extends Controller
      *
      * @param Request $request
      * @param Response $response
-     * @return mixed
      */
     public function postCreate(Request $request, Response $response)
     {
@@ -128,7 +92,7 @@ class QuestionController extends Controller
 
         $this->flash->addMessage('success', 'Question successfully created.');
 
-        return $response->withRedirect($this->router->pathFor('question.user-questions'));
+        return $response->withRedirect($this->router->pathFor('question.list'));
     }
 
     /**
@@ -137,7 +101,6 @@ class QuestionController extends Controller
      * @param Request $request
      * @param Response $response
      * @param array $args
-     * @return $mixed
      */
     public function getEdit(Request $request, Response $response, array $args)
     {
@@ -152,7 +115,6 @@ class QuestionController extends Controller
      * @param Request $request
      * @param Response $response
      * @param array $args
-     * @return $mixed
      */
     public function postEdit(Request $request, Response $response, array $args)
     {
@@ -194,7 +156,7 @@ class QuestionController extends Controller
             $this->flash->addMessage('success', 'Question successfully edited.');
         }
 
-        return $response->withRedirect($this->router->pathFor('question.user-questions'));
+        return $response->withRedirect($this->router->pathFor('question.list'));
     }
 
     /**
@@ -203,16 +165,15 @@ class QuestionController extends Controller
      * @param Request $request
      * @param Response $response
      * @param array $args
-     * @return $mixed
      */
-//    public function confirmDelete(Request $request, Response $response, array $args)
-//    {
-//        return $this->view->render($response, 'templates/confirmation.twig', [
-//            'id' => $args['id'],
-//            'routeName' => 'question.delete',
-//            'message' => 'Are you sure that you want to delete this question? You can\'t revert this.'
-//        ]);
-//    }
+    public function confirmDelete(Request $request, Response $response, array $args)
+    {
+        return $this->view->render($response, 'templates/confirmation.twig', [
+            'id' => $args['id'],
+            'routeName' => 'question.delete',
+            'message' => 'Are you sure that you want to delete this question? You can\'t revert this.'
+        ]);
+    }
 
     /**
      * Process question delete
@@ -220,19 +181,18 @@ class QuestionController extends Controller
      * @param Request $request
      * @param Response $response
      * @param array $args
-     * @return $mixed
      */
-//    public function delete(Request $request, Response $response, array $args)
-//    {
-//        // Delete question
-//        if ($request->getParam('yes')) {
-//            Question::destroy($args['id']);
-//
-//            $this->flash->addMessage('success', 'Question successfully deleted.');
-//        }
-//
-//        return $response->withRedirect($this->router->pathFor('question.user-questions'));
-//    }
+    public function delete(Request $request, Response $response, array $args)
+    {
+        // Delete question
+        if ($request->getParam('yes')) {
+            Question::destroy($args['id']);
+
+            $this->flash->addMessage('success', 'Question successfully deleted.');
+        }
+
+        return $response->withRedirect($this->router->pathFor('question.list'));
+    }
 
     /**
      * Show question closing confirmation
@@ -240,7 +200,6 @@ class QuestionController extends Controller
      * @param Request $request
      * @param Response $response
      * @param array $args
-     * @return $mixed
      */
     public function confirmClose(Request $request, Response $response, array $args)
     {
@@ -258,7 +217,6 @@ class QuestionController extends Controller
      * @param Request $request
      * @param Response $response
      * @param array $args
-     * @return $mixed
      */
     public function close(Request $request, Response $response, array $args)
     {
@@ -271,14 +229,13 @@ class QuestionController extends Controller
             $this->flash->addMessage('success', 'Question successfully closed.');
         }
 
-        return $response->withRedirect($this->router->pathFor('question.user-questions'));
+        return $response->withRedirect($this->router->pathFor('question.list'));
     }
 
     /**
      * @param Request $request
      * @param Response $response
      * @param array $args
-     * @return mixed
      */
     public function show(Request $request, Response $response, array $args)
     {

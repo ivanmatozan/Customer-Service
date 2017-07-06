@@ -1,0 +1,67 @@
+{% extends 'templates/app.twig' %}
+
+{% block title %}Questions{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h2>Questions</h2>
+        </div>
+    </div>
+
+    <!-- Show button only is user has role user -->
+    {% if auth.user.role.name == 'user' %}
+        <div class="row">
+            <div class="col-xs-12">
+                <a href="{{ path_for('question.create') }}" class="btn btn-primary pull-right">New</a>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs">
+                <li role="presentation"  class="{% if activeTab == 'all' %}active{% endif %}">
+                    <a href="{{ path_for('question.list', {}, {tab: 'all'}) }}">All</a>
+                </li>
+                <li role="presentation" class="{% if activeTab == 'open' %}active{% endif %}">
+                    <a href="{{ path_for('question.list', {}, {tab: 'open'}) }}">Open</a>
+                </li>
+                <li role="presentation" class="{% if activeTab == 'closed' %}active{% endif %}">
+                    <a href="{{ path_for('question.list', {}, {tab: 'closed'}) }}">Closed</a>
+                </li>
+            </ul>
+
+            {% if questions is not empty %}
+                {% for question in questions %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">{{ question.subject }}</div>
+                        <div class="panel-body">{{ question.text }}</div>
+                        <div class="panel-footer">
+                            <a href="{{ path_for('question.show', {id: question.id}) }}" class="btn btn-default">Details</a>
+
+                            {% if auth.user.role.name == 'user' %}
+
+                                <!-- Show button only if question isn't already closed -->
+                                {% if not question.closed %}
+                                    <a href="{{ path_for('question.close', {id: question.id}) }}" class="btn btn-success">Close</a>
+                                {% endif %}
+
+                                <!-- Show buttons only if question has no responses -->
+                                {% if question.responses.count == 0 %}
+                                    <a href="{{ path_for('question.edit', {id: question.id}) }}" class="btn btn-default">Edit</a>
+                                    <a href="{{ path_for('question.delete', {id: question.id}) }}" class="btn btn-danger">Delete</a>
+                                {% endif %}
+
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="well">There is no questions.</div>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

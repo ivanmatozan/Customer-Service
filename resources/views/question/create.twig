@@ -1,12 +1,12 @@
 {% extends 'templates/app.twig' %}
 
-{% block title %}Create question{% endblock %}
+{% block title %}Create Question{% endblock %}
 
 {% block content %}
 
     <div class="row">
         <div class="col-xs-12">
-            <h3>Create question</h3>
+            <h2>Create Question</h2>
         </div>
     </div>
 
@@ -31,7 +31,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-default">Create</button>
-                <a href="{{ path_for('question.user-questions') }}" class="btn btn-danger pull-right">Cancel</a>
+                <a href="{{ path_for('question.list') }}" class="btn btn-danger pull-right">Cancel</a>
             </form>
         </div>
     </div>

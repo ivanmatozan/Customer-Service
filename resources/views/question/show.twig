@@ -1,8 +1,20 @@
 {% extends 'templates/app.twig' %}
 
-{% block title %}Question{% endblock %}
+{% block title %}Question Details{% endblock %}
 
 {% block content %}
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h2>Questions Details</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <a href="{{ path_for('question.list') }}" class="btn btn-primary">Back</a>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-xs-12">
