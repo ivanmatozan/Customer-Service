@@ -29,3 +29,5 @@ $app->post('/questions/edit/{id}', 'App\Controllers\QuestionController:postEdit'
 $app->get('/questions/close/{id}', 'App\Controllers\QuestionController:confirmClose')->setName('question.close');
 $app->post('/questions/close/{id}', 'App\Controllers\QuestionController:close');
 $app->get('/questions/show/{id}', 'App\Controllers\QuestionController:show')->setName('question.show');
+
+$app->post('/questions/{id}/response', 'App\Controllers\ResponseController:postCreate')->setName('response.create');
