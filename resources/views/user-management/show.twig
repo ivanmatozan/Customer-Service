@@ -1,18 +1,18 @@
 {% extends 'templates/app.twig' %}
 
-{% block title %}User management{% endblock %}
+{% block title %}User Management{% endblock %}
 
 {% block content %}
 
     <div class="row">
         <div class="col-xs-12">
-            <h3>User management</h3>
+            <h3>User Management</h3>
         </div>
     </div>
 
     <div class="row">
         <div class="col-xs-12">
-            <a href="{{ path_for('user.create') }}" class="btn btn-primary pull-right">Create user</a>
+            <a href="{{ path_for('user-management.create') }}" class="btn btn-primary pull-right">Create user</a>
         </div>
     </div>
 
@@ -40,8 +40,8 @@
                                 <td>{{ user.role.name }}</td>
                                 <td>{{ user.created_at }}</td>
                                 <td>{{ user.updated_at }}</td>
-                                <td><a href="{{ path_for('user.edit', {id: user.id}) }}">Edit</a></td>
-                                <td><a href="{{ path_for('user.delete', {id: user.id}) }}">Delete</a></td>
+                                <td><a href="{{ path_for('user-management.edit', {id: user.id}) }}">Edit</a></td>
+                                <td><a href="{{ path_for('user-management.delete', {id: user.id}) }}">Delete</a></td>
                             </tr>
                         {% endfor %}
                     </tbody>

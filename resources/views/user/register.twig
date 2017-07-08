@@ -1,6 +1,6 @@
 {% extends 'templates/app.twig' %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Register{% endblock %}
 
 {% block content %}
 
@@ -8,11 +8,19 @@
         <div class="col-md-6 col-md-offset-3">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Login</h3>
+                    <h3 class="panel-title">Register</h3>
                 </div>
                 <div class="panel-body">
 
-                    <form action="{{ path_for('auth.login') }}" method="post" class="form">
+                    <form action="{{ path_for('user.register') }}" method="post" class="form">
+
+                        <div class="form-group {{ validationErrors.name ? 'has-error' : '' }}">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" class="form-control" value="{{ oldData.name }}">
+                            {% if validationErrors.name %}
+                                <span class="help-block">{{ validationErrors.name | first}}</span>
+                            {% endif%}
+                        </div>
 
                         <div class="form-group {{ validationErrors.email ? 'has-error' : '' }}">
                             <label for="email">Email</label>
@@ -30,7 +38,15 @@
                             {% endif%}
                         </div>
 
-                        <button type="submit" class="btn btn-default">Login</button>
+                        <div class="form-group {{ validationErrors.confirm_password ? 'has-error' : '' }}">
+                            <label for="confirm-password">Confirm Password</label>
+                            <input type="password" id="confirm-password" name="confirm_password" class="form-control">
+                            {% if validationErrors.confirm_password %}
+                                <span class="help-block">{{ validationErrors.confirm_password | first}}</span>
+                            {% endif%}
+                        </div>
+
+                        <button type="submit" class="btn btn-default">Register</button>
 
                     </form>
 
