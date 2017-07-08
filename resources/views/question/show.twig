@@ -36,6 +36,15 @@
                         <div>Author: {{ response.user.name }}</div>
                     </div>
                     <div class="panel-body">{{ response.text }}</div>
+
+                    {% if response.id == lastResponse.id %}
+                        <div class="panel-footer">
+                            <a href="{{ path_for('response.edit', {id: response.id}) }}"
+                               class="btn btn-default">Edit</a>
+                            <a href="{{ path_for('response.delete', {id: response.id}) }}"
+                               class="btn btn-danger">Delete</a>
+                        </div>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>

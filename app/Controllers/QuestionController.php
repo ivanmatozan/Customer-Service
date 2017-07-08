@@ -233,6 +233,8 @@ class QuestionController extends Controller
     }
 
     /**
+     * Display question detailed view
+     *
      * @param Request $request
      * @param Response $response
      * @param array $args
@@ -243,6 +245,12 @@ class QuestionController extends Controller
             $query->orderBy('created_at', 'asc');
         }])->find($args['id']);
 
-        return $this->view->render($response, 'question/show.twig', compact('question'));
+        // Question's last response
+        $lastResponse = $question->responses()->latest()->first();
+
+        return $this->view->render($response, 'question/show.twig', [
+            'question' => $question,
+            'lastResponse' => $lastResponse
+        ]);
     }
 }

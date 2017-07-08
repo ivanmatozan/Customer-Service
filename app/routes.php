@@ -30,3 +30,7 @@ $app->post('/questions/close/{id}', 'App\Controllers\QuestionController:close');
 $app->get('/questions/show/{id}', 'App\Controllers\QuestionController:show')->setName('question.show');
 
 $app->post('/questions/{id}/response', 'App\Controllers\ResponseController:postCreate')->setName('response.create');
+$app->get('/response/edit/{id}', 'App\Controllers\ResponseController:getEdit')->setName('response.edit');
+$app->post('/response/edit/{id}', 'App\Controllers\ResponseController:postEdit');
+$app->get('/response/delete/{id}', 'App\Controllers\ResponseController:confirmDelete')->setName('response.delete');
+$app->post('/response/delete/{id}', 'App\Controllers\ResponseController:delete');
