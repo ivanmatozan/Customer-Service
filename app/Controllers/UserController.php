@@ -20,7 +20,7 @@ class UserController extends Controller
     public function show(Request $request, Response $response)
     {
         $users = User::whereHas('role', function ($query) {
-            $query->where('name', '!=', 'superadmin');
+            $query->where('name', '!=', 'webadmin');
         })->get();
 
         return $this->view->render($response, 'user/show.twig', compact('users'));
@@ -35,7 +35,7 @@ class UserController extends Controller
      */
     public function getCreate(Request $request, Response $response)
     {
-        $roles = Role::where('name', '!=', 'superadmin')->get();
+        $roles = Role::where('name', '!=', 'webadmin')->get();
 
         return $this->view->render($response, 'user/create.twig', compact('roles'));
     }
@@ -90,7 +90,7 @@ class UserController extends Controller
      */
     public function getEdit(Request $request, Response $response, $args)
     {
-        $roles = Role::where('name', '!=', 'superadmin')->get();
+        $roles = Role::where('name', '!=', 'webadmin')->get();
         $user = User::find($args['id']);
 
         return $this->view->render($response, 'user/edit.twig', compact('roles', 'user'));
