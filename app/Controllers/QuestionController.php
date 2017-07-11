@@ -20,15 +20,15 @@ class QuestionController extends Controller
      */
     public function list(Request $request, Response $response)
     {
-        // Authenticated user role
-        $userRole = $this->auth->getUser()->role->name;
+        // Currently authenticated user
+        $user = $this->auth->getUser();
 
         // Query question depending on user role
-        if ($userRole === 'admin') {
+        if ($user->role->name === 'admin') {
             $questionsQB = Question::query();
         } else {
-            $questionsQB = Question::whereHas('user.role', function ($query) use ($userRole) {
-                $query->where('role.name', $userRole);
+            $questionsQB = Question::whereHas('user', function ($query) use ($user) {
+                $query->where('id', $user->id);
             });
         }
 
