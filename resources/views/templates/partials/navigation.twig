@@ -27,7 +27,7 @@
                            aria-expanded="false">{{ auth.user.name }} <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Profile</a></li>
+                            <li><a href="{{ path_for('user.profile') }}">Profile</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="{{ path_for('user.logout') }}">Logout</a></li>
                         </ul>

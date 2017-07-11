@@ -1,0 +1,25 @@
+{% extends 'templates/app.twig' %}
+
+{% block title %}{{ user.name }}{% endblock %}
+
+{% block content %}
+
+    <div class="page-header">
+        <h1>{{ user.name }} <small>{{ user.email }}</small></h1>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="thumbnail">
+                <img src="{{ user.image ? '/uploads/' ~ user.image : '/images/profile.png' }}" alt="Profile image" class="img-rounded">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <a href="{{ path_for('user.edit', {id: user.id}) }}" class="btn btn-default">Edit</a>
+        </div>
+    </div>
+
+{% endblock %}

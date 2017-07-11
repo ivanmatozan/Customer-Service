@@ -7,6 +7,9 @@ $app->post('/register', 'App\Controllers\UserController:postRegister');
 $app->get('/login', 'App\Controllers\UserController:getLogin')->setName('user.login');
 $app->post('/login', 'App\Controllers\UserController:postLogin');
 $app->get('/logout', 'App\Controllers\UserController:logout')->setName('user.logout');
+$app->get('/profile', 'App\Controllers\UserController:profile')->setName('user.profile');
+$app->get('/profile/edit/{id}', 'App\Controllers\UserController:getEdit')->setName('user.edit');
+$app->post('/profile/edit/{id}', 'App\Controllers\UserController:postEdit');
 
 $app->get('/user-management', 'App\Controllers\UserManagementController:show')->setName('user-management.show');
 $app->get('/user-management/create', 'App\Controllers\UserManagementController:getCreate')->setName('user-management.create');

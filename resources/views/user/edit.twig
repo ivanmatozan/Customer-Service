@@ -1,0 +1,60 @@
+{% extends 'templates/app.twig' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+
+    <div class="page-header">
+        <h1>Edit Profile <small>{{ user.name }}</small></h1>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <form action="{{ path_for('user.edit', {id: user.id}) }}" method="post" enctype="multipart/form-data" class="form">
+                <div class="form-group {{ validationErrors.image ? 'has-error' : '' }}">
+                    <label for="image">Profile image</label>
+                    <input type="file" id="image" name="image" class="form-control">
+                    {% if validationErrors.image %}
+                        <span class="help-block">{{ validationErrors.image | first}}</span>
+                    {% endif%}
+                </div>
+
+                <div class="form-group {{ validationErrors.name ? 'has-error' : '' }}">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" class="form-control" value="{{ oldData.name ? oldData.name : user.name }}">
+                    {% if validationErrors.name %}
+                        <span class="help-block">{{ validationErrors.name | first}}</span>
+                    {% endif%}
+                </div>
+
+                <div class="form-group {{ validationErrors.email ? 'has-error' : '' }}">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" value="{{ oldData.email ? oldData.email : user.email}}">
+                    {% if validationErrors.email %}
+                        <span class="help-block">{{ validationErrors.email | first}}</span>
+                    {% endif%}
+                </div>
+
+                <div class="form-group {{ validationErrors.password ? 'has-error' : '' }}">
+                    <label for="password">New Password</label>
+                    <input type="password" id="password" name="password" class="form-control">
+                    {% if validationErrors.password %}
+                        <span class="help-block">{{ validationErrors.password | first}}</span>
+                    {% endif%}
+                </div>
+
+                <div class="form-group {{ validationErrors.confirm_password ? 'has-error' : '' }}">
+                    <label for="confirm-password">Confirm New Password</label>
+                    <input type="password" id="confirm-password" name="confirm_password" class="form-control">
+                    {% if validationErrors.confirm_password %}
+                        <span class="help-block">{{ validationErrors.confirm_password | first}}</span>
+                    {% endif%}
+                </div>
+
+                <button type="submit" class="btn btn-default">Update</button>
+                <a href="{{ path_for('user-management.show') }}" class="btn btn-danger pull-right">Cancel</a>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

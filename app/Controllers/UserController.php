@@ -117,4 +117,116 @@ class UserController extends Controller
 
         return $response->withRedirect($this->router->pathFor('home'));
     }
+
+    /**
+     * Display user profile page
+     *
+     * @param Request $request
+     * @param Response $response
+     */
+    public function profile(Request $request, Response $response)
+    {
+        // Currently logged in user
+        $user = $this->auth->getUser();
+
+        return $this->view->render($response, 'user/profile.twig', compact('user'));
+    }
+
+    /**
+     * Display edit profile form
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     */
+    public function getEdit(Request $request, Response $response, array $args)
+    {
+        $user = User::find($args['id']);
+
+        return $this->view->render($response, 'user/edit.twig', compact('user'));
+    }
+
+    /**
+     * Process edit profile form
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     */
+    public function postEdit(Request $request, Response $response, array $args)
+    {
+        // Currently logged in user
+        $user = $this->auth->getUser();
+
+        $uploadedFiles = $request->getUploadedFiles();
+        $uploadedFile = $uploadedFiles['image'];
+
+        // Validation rules
+        $rules = [];
+
+        // Check if image is set
+        if (!empty($uploadedFile->file)) {
+            $rules['image'] = v::image()->size(null, '100KB');
+        }
+
+        // Check if name is changed
+        if ($request->getParam('name') !== $user->name) {
+            $rules['name'] = v::notEmpty();
+
+            $user->name = $request->getParam('name');
+        }
+
+        // Check if email is changed
+        if ($request->getParam('email') !== $user->email) {
+            $rules['email'] = v::notEmpty()->email()->emailAvailable();
+
+            $user->email = $request->getParam('email');
+        }
+
+        // Check if password is changed
+        if (!empty($request->getParam('password'))) {
+            $rules['password'] = v::length(6, null);
+            $rules['confirm_password'] = v::notEmpty()->confirmPassword($request->getParam('password'));
+
+            $user->password = password_hash($request->getParam('password'), PASSWORD_DEFAULT);
+        }
+
+        // Don't try to validate and save if nothing changed
+        if (!empty($rules)) {
+            $data = $request->getParams();
+            $data['image'] = $uploadedFile->file;
+
+            // Validate form data
+            $validator = $this->validator->validate($data, $rules);
+
+            // Redirect back to form if validation failed
+            if ($validator->failed()) {
+                // Add input data to session
+                $_SESSION['old_form_data'] = $request->getParams();
+
+                return $response->withRedirect($this->router->pathFor('user.edit', ['id' => $args['id']]));
+            }
+
+            // File upload
+            if ($uploadedFile->getError() === UPLOAD_ERR_OK) {
+                $directory = $this->container->get('upload_directory');
+
+                $fileName = $this->upload->moveUploadedFile($directory, $uploadedFile);
+
+                // Delete old file
+                if ($user->image) {
+                    unlink($directory . $user->image);
+                }
+
+                $user->image = $fileName;
+            }
+
+            // Save changes to DB
+            $user->save();
+
+            $this->flash->addMessage('success', 'Profile successfully updated.');
+        }
+
+        return $response->withRedirect($this->router->pathFor('user.profile'));
+    }
 }
