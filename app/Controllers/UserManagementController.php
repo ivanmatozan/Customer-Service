@@ -99,7 +99,7 @@ class UserManagementController extends Controller
      */
     public function getEdit(Request $request, Response $response, $args)
     {
-        $roles = Role::where('name', $this->rolesToShow)->get();
+        $roles = Role::whereIn('name', $this->rolesToShow)->get();
         $user = User::find($args['id']);
 
         return $this->view->render($response, 'user-management/edit.twig', compact('roles', 'user'));
