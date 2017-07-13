@@ -9,7 +9,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-4 col-md-offset-4">
+        <div class="col-xs-12 col-sm-4 col-sm-offset-4">
             <div class="thumbnail">
                 <img src="{{ user.image ? '/uploads/' ~ user.image : '/images/profile.png' }}" alt="Profile image" class="img-rounded">
             </div>
@@ -17,8 +17,9 @@
     </div>
 
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-xs-12 col-sm-4 col-sm-offset-4">
             <a href="{{ path_for('user.edit', {id: user.id}) }}" class="btn btn-default">Edit</a>
+            <a href="#" class="btn btn-danger pull-right">Remove Image</a>
         </div>
     </div>
 

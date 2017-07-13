@@ -5,20 +5,14 @@
 {% block content %}
 
     <div class="row">
-        <div class="col-xs-12">
-            <h2>Questions Details</h2>
+        <div class="page-header">
+            <h1>Questions Details</h1>
         </div>
     </div>
 
     <div class="row">
         <div class="col-xs-12">
-            <a href="{{ path_for('question.list') }}" class="btn btn-primary">Back</a>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="panel panel-default">
+            <div class="panel panel-primary">
                 <div class="panel-heading">
                     <div>Author: {{ question.user.name }}</div>
                     <div>Subject: <strong>{{ question.subject }}</strong></div>
@@ -31,7 +25,7 @@
     <div class="row">
         <div class="col-xs-12">
             {% for response in question.responses %}
-                <div class="panel panel-default">
+                <div class="panel panel-{{ auth.user.id == response.user.id ? 'info' : 'warning' }}">
                     <div class="panel-heading">
                         <div>Author: {{ response.user.name }}</div>
                     </div>
@@ -40,7 +34,7 @@
                     {% if response.id == lastResponse.id %}
                         <div class="panel-footer">
                             <a href="{{ path_for('response.edit', {id: response.id}) }}"
-                               class="btn btn-default">Edit</a>
+                               class="btn btn-warning">Edit</a>
                             <a href="{{ path_for('response.delete', {id: response.id}) }}"
                                class="btn btn-danger">Delete</a>
                         </div>
@@ -62,7 +56,8 @@
                     {% endif %}
                 </div>
 
-                <button type="submit" class="btn btn-default">Reply</button>
+                <button type="submit" class="btn btn-default pull-right">Reply</button>
+                <a href="{{ path_for('question.list') }}" class="btn btn-primary">Back</a>
             </form>
         </div>
     </div>
