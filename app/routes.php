@@ -27,22 +27,21 @@ $app->group('/user-management', function () {
     $this->post('/edit/{id}', 'App\Controllers\UserManagementController:postEdit');
     $this->get('/delete/{id}', 'App\Controllers\UserManagementController:confirmDelete')->setName('user-management.delete');
     $this->post('/delete/{id}', 'App\Controllers\UserManagementController:delete');
-})->add(new \App\Middleware\Role\WebAdminMiddleware($container))
+})->add(new \App\Middleware\Auth\RoleMiddleware($container, ['webadmin']))
     ->add(new \App\Middleware\Auth\AuthMiddleware($container));
 
 // Only admin and user can see question(s)
 $app->group('/questions', function () {
     $this->get('', 'App\Controllers\QuestionController:list')->setName('question.list');
     $this->get('/show/{id}', 'App\Controllers\QuestionController:show')->setName('question.show');
-})->add(new \App\Middleware\Role\UserMiddleware($container))
-    ->add(new \App\Middleware\Role\AdminMiddleware($container))
+})->add(new \App\Middleware\Auth\RoleMiddleware($container, ['admin', 'user']))
     ->add(new \App\Middleware\Auth\AuthMiddleware($container));
 
 // Only user can create new question
 $app->group('/questions', function () {
     $this->get('/create', 'App\Controllers\QuestionController:getCreate')->setName('question.create');
     $this->post('/create', 'App\Controllers\QuestionController:postCreate');
-})->add(new \App\Middleware\Role\UserMiddleware($container))
+})->add(new \App\Middleware\Auth\RoleMiddleware($container, ['user']))
     ->add(new \App\Middleware\Auth\AuthMiddleware($container));
 
 // Only user can edit|delete|close question
@@ -53,7 +52,7 @@ $app->group('/questions', function () {
     $this->post('/delete/{id}', 'App\Controllers\QuestionController:delete');
     $this->get('/close/{id}', 'App\Controllers\QuestionController:confirmClose')->setName('question.close');
     $this->post('/close/{id}', 'App\Controllers\QuestionController:close');
-})->add(new \App\Middleware\Role\UserMiddleware($container))
+})->add(new \App\Middleware\Auth\RoleMiddleware($container, ['user']))
     ->add(new \App\Middleware\Auth\AuthMiddleware($container));
 
 // Only admin and user can create|edit|delete response
@@ -63,6 +62,5 @@ $app->group('', function () {
     $this->post('/response/edit/{id}', 'App\Controllers\ResponseController:postEdit');
     $this->get('/response/delete/{id}', 'App\Controllers\ResponseController:confirmDelete')->setName('response.delete');
     $this->post('/response/delete/{id}', 'App\Controllers\ResponseController:delete');
-})->add(new \App\Middleware\Role\UserMiddleware($container))
-    ->add(new \App\Middleware\Role\AdminMiddleware($container))
+})->add(new \App\Middleware\Auth\RoleMiddleware($container, ['admin', 'user']))
     ->add(new \App\Middleware\Auth\AuthMiddleware($container));

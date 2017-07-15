@@ -1,15 +1,36 @@
 <?php
 
-namespace App\Middleware\Role;
+namespace App\Middleware\Auth;
 
 use App\Middleware\Middleware;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-class AdminMiddleware extends Middleware
+class RoleMiddleware extends Middleware
 {
     /**
-     * Check if user has role admin
+     * Roles to check
+     *
+     * @var array
+     */
+    protected $roles;
+
+    /**
+     * RoleMiddleware constructor
+     *
+     * @param ContainerInterface $container
+     * @param array $roles
+     */
+    function __construct(ContainerInterface $container, array $roles = [])
+    {
+        parent::__construct($container);
+
+        $this->roles = $roles;
+    }
+
+    /**
+     * Check user role
      *
      * @param Request $request
      * @param Response $response
@@ -20,7 +41,7 @@ class AdminMiddleware extends Middleware
     {
         $userRole = $this->auth->getUser()->role->name;
 
-        if ($userRole != 'admin') {
+        if (!in_array($userRole, $this->roles)) {
             return $response->withRedirect($this->router->pathFor('home'));
         }
 
