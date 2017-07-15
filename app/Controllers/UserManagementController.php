@@ -102,7 +102,12 @@ class UserManagementController extends Controller
         $roles = Role::whereIn('name', $this->rolesToShow)->get();
         $user = User::find($args['id']);
 
-        return $this->view->render($response, 'user-management/edit.twig', compact('roles', 'user'));
+        if ($user) {
+            // If user exists display edit form
+            return $this->view->render($response, 'user-management/edit.twig', compact('roles', 'user'));
+        }
+
+        return $response->withRedirect($this->router->pathFor('user-management.show'));
     }
 
     /**
@@ -145,8 +150,9 @@ class UserManagementController extends Controller
             $user->password = password_hash($request->getParam('password'), PASSWORD_DEFAULT);
         }
 
-        // Don't try to validate and save if nothing changed
-        if (!empty($rules)) {
+        // Don't try to validate and save if user doesn't exist
+        // and if nothing changed
+        if ($user && !empty($rules)) {
             // Validate form data
             $validator = $this->validator->validate($request->getParams(), $rules);
 
@@ -192,8 +198,10 @@ class UserManagementController extends Controller
      */
     public function delete(Request $request, Response $response, $args)
     {
+        $user = User::find($args['id']);
+
         // Delete user
-        if ($request->getParam('yes')) {
+        if ($request->getParam('yes') && $user) {
             User::destroy($args['id']);
 
             $this->flash->addMessage('success', 'User successfully deleted.');
