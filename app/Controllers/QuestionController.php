@@ -104,7 +104,17 @@ class QuestionController extends Controller
      */
     public function getEdit(Request $request, Response $response, array $args)
     {
-        $question = Question::find($args['id']);
+        $question = Question::withCount('responses')->find($args['id']);
+
+        // If question doesn't have responses it's editable
+        $isEditable = isset($question->responses_count) && $question->responses_count == 0;
+
+        // Redirect if question doesn't exist
+        // or logged in user doesn't own accessed question
+        // or isn't editable
+        if (!$question || !$this->isQuestionOwner($question) || !$isEditable) {
+            return $response->withRedirect($this->router->pathFor('question.list'));
+        }
 
         return $this->view->render($response, 'question/edit.twig', compact('question'));
     }
@@ -118,7 +128,18 @@ class QuestionController extends Controller
      */
     public function postEdit(Request $request, Response $response, array $args)
     {
-        $question = Question::find($args['id']);
+        $question = Question::withCount('responses')->find($args['id']);
+
+        // If question doesn't have responses it's editable
+        $isEditable = isset($question->responses_count) && $question->responses_count == 0;
+
+        // Redirect if question doesn't exist
+        // or logged in user doesn't own accessed question
+        // or isn't editable
+        if (!$question || !$this->isQuestionOwner($question) || !$isEditable) {
+            $this->flash->addMessage('error', 'You can not edit this question');
+            return $response->withRedirect($this->router->pathFor('question.list'));
+        }
 
         // Validation rules
         $rules = [];
@@ -138,6 +159,7 @@ class QuestionController extends Controller
         }
 
         // Don't try to validate and save if nothing changed
+        // and question isn't editable
         if (!empty($rules)) {
             // Validate form data
             $validator = $this->validator->validate($request->getParams(), $rules);
@@ -168,6 +190,7 @@ class QuestionController extends Controller
      */
     public function confirmDelete(Request $request, Response $response, array $args)
     {
+        // Render confirmation view
         return $this->view->render($response, 'templates/confirmation.twig', [
             'id' => $args['id'],
             'routeName' => 'question.delete',
@@ -184,9 +207,23 @@ class QuestionController extends Controller
      */
     public function delete(Request $request, Response $response, array $args)
     {
+        $question = Question::withCount('responses')->find($args['id']);
+
+        // If question doesn't have responses it's deletable
+        $isDeletable = isset($question->responses_count) && $question->responses_count == 0;
+
+        // Redirect if question doesn't exist
+        // or logged in user doesn't own accessed question
+        // or isn't deletable
+        if (!$question || !$this->isQuestionOwner($question) || !$isDeletable) {
+            $this->flash->addMessage('error', 'You can not delete this question');
+
+            return $response->withRedirect($this->router->pathFor('question.list'));
+        }
+
         // Delete question
         if ($request->getParam('yes')) {
-            Question::destroy($args['id']);
+            $question->delete();
 
             $this->flash->addMessage('success', 'Question successfully deleted.');
         }
@@ -220,9 +257,17 @@ class QuestionController extends Controller
      */
     public function close(Request $request, Response $response, array $args)
     {
+        $question = Question::find($args['id']);
+
+        // Redirect if question doesn't exist or logged in user doesn't own accessed question
+        if (!$question || !$this->isQuestionOwner($question)) {
+            $this->flash->addMessage('error', 'You can not close this question');
+            return $response->withRedirect($this->router->pathFor('question.list'));
+        }
+
         // Close question
         if ($request->getParam('yes')) {
-            Question::where('id', $args['id'])->update([
+            $question->update([
                 'closed' => true
             ]);
 
@@ -245,6 +290,14 @@ class QuestionController extends Controller
             $query->orderBy('created_at', 'asc');
         }])->find($args['id']);
 
+        $userRole = $this->auth->getUser()->role->name;
+
+        // Redirect if question doesn't exist or logged in user has role user
+        // and doesn't own accessed question
+        if (!$question || ($userRole == 'user' && !$this->isQuestionOwner($question))) {
+            return $response->withRedirect($this->router->pathFor('question.list'));
+        }
+
         // Question's last response
         $lastResponse = $question->responses()->latest()->first();
 
@@ -252,5 +305,19 @@ class QuestionController extends Controller
             'question' => $question,
             'lastResponse' => $lastResponse
         ]);
+    }
+
+    /**
+     * Check if logged in user owns accessed question
+     *
+     * @param Question $question
+     * @return bool If user isn't question owner return false, true otherwise
+     */
+    protected function isQuestionOwner(Question $question): bool
+    {
+        $user = $this->auth->getUser();
+
+        // Check if user owns accessed question
+        return $question->user->id == $user->id;
     }
 }
