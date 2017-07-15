@@ -13,7 +13,7 @@ $dotenv->load();
 // Instantiate Slim application
 $app = new Slim\App([
     'settings' => [
-        'displayErrorDetails' => $_ENV['APP_DEBUG']
+        'displayErrorDetails' => ($_ENV['APP_DEBUG'] == 'true')
     ]
 ]);
 
