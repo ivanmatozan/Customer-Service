@@ -18,4 +18,17 @@ abstract class Middleware
     {
         $this->container = $container;
     }
+
+    /**
+     * Get service from container
+     *
+     * @param string $property
+     * @return mixed
+     */
+    public function __get(string $property)
+    {
+        if ($this->container->has($property)) {
+            return $this->container->get($property);
+        }
+    }
 }
