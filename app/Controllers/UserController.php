@@ -137,11 +137,10 @@ class UserController extends Controller
      *
      * @param Request $request
      * @param Response $response
-     * @param array $args
      */
-    public function getEdit(Request $request, Response $response, array $args)
+    public function getEdit(Request $request, Response $response)
     {
-        $user = User::find($args['id']);
+        $user = $this->auth->getUser();
 
         return $this->view->render($response, 'user/edit.twig', compact('user'));
     }
@@ -151,9 +150,8 @@ class UserController extends Controller
      *
      * @param Request $request
      * @param Response $response
-     * @param array $args
      */
-    public function postEdit(Request $request, Response $response, array $args)
+    public function postEdit(Request $request, Response $response)
     {
         // Currently logged in user
         $user = $this->auth->getUser();
@@ -204,7 +202,7 @@ class UserController extends Controller
                 // Add input data to session
                 $_SESSION['old_form_data'] = $request->getParams();
 
-                return $response->withRedirect($this->router->pathFor('user.edit', ['id' => $args['id']]));
+                return $response->withRedirect($this->router->pathFor('user.edit'));
             }
 
             // File upload

@@ -14,8 +14,8 @@ $app->group('', function () {
 $app->group('', function () {
     $this->get('/logout', 'App\Controllers\UserController:logout')->setName('user.logout');
     $this->get('/profile', 'App\Controllers\UserController:profile')->setName('user.profile');
-    $this->get('/profile/edit/{id}', 'App\Controllers\UserController:getEdit')->setName('user.edit');
-    $this->post('/profile/edit/{id}', 'App\Controllers\UserController:postEdit');
+    $this->get('/profile/edit', 'App\Controllers\UserController:getEdit')->setName('user.edit');
+    $this->post('/profile/edit', 'App\Controllers\UserController:postEdit');
 })->add(new \App\Middleware\Auth\AuthMiddleware($container));
 
 // Only webadmin can access user-management

@@ -10,7 +10,7 @@
 
     <div class="row">
         <div class="col-xs-12">
-            <form action="{{ path_for('user.edit', {id: user.id}) }}" method="post" enctype="multipart/form-data" class="form">
+            <form action="{{ path_for('user.edit') }}" method="post" enctype="multipart/form-data" class="form">
                 <div class="form-group {{ validationErrors.image ? 'has-error' : '' }}">
                     <label for="image">Profile image</label>
                     <input type="file" id="image" name="image" class="form-control">
