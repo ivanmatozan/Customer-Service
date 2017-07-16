@@ -59,7 +59,7 @@
                                 {% endif %}
 
                                 <!-- Show buttons only if question has no responses and isn't closed -->
-                                {% if question.responses.count == 0 and not question.closed %}
+                                {% if question.responses_count == 0 and not question.closed %}
                                     <a href="{{ path_for('question.edit', {id: question.id}) }}" class="btn btn-sm btn-warning">Edit</a>
                                     <a href="{{ path_for('question.delete', {id: question.id}) }}" class="btn btn-sm btn-danger">Delete</a>
                                 {% endif %}

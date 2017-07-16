@@ -22,6 +22,15 @@ class ResponseController extends Controller
      */
     public function postCreate(Request $request, Response $response, array $args)
     {
+        $question = Question::with(['user', 'responses'])->find($args['id']);
+
+        // If question doesn't exist
+        // or reply form isn't enabled
+        // redirect back to question list
+        if (!$question || !$this->helper->enableReplyForm($question)) {
+            return $response->withRedirect($this->router->pathFor('question.list'));
+        }
+
         // Validate form
         $validator = $this->validator->validate($request->getParams(), [
             'response' => v::notEmpty()
@@ -30,7 +39,6 @@ class ResponseController extends Controller
         if ($validator->failed()) {
             $_SESSION['old_form_data'] = $request->getParams();
         } else {
-            // Save response to DB
             $questionResponse = new QuestionResponse([
                 'text' => $request->getParam('response')
             ]);
@@ -38,7 +46,7 @@ class ResponseController extends Controller
             $user = $this->auth->getUser();
             $questionResponse->user()->associate($user);
 
-            $question = Question::find($args['id']);
+            // Save response to DB
             $question->responses()->save($questionResponse);
 
             $this->flash->addMessage('success', 'Response successfully created.');
@@ -56,7 +64,17 @@ class ResponseController extends Controller
      */
     public function getEdit(Request $request, Response $response, array $args)
     {
-        $questionResponse = QuestionResponse::find($args['id']);
+        $questionResponse = QuestionResponse::with('user', 'question')->find($args['id']);
+
+        // Redirect if response doesn't exist
+        // or if response can't be edited or deleted
+        if (!$response || !$this->helper->isResponseEditableDeletable($questionResponse)) {
+            $this->flash->addMessage('error', 'You can not edit this response.');
+
+            return $response->withRedirect($this->router->pathFor('question.show', [
+                'id' => $questionResponse->question->id
+            ]));
+        }
 
         return $this->view->render($response, 'response/edit.twig', compact('questionResponse'));
     }
@@ -70,6 +88,18 @@ class ResponseController extends Controller
      */
     public function postEdit(Request $request, Response $response, array $args)
     {
+        $questionResponse = QuestionResponse::with('user', 'question')->find($args['id']);
+
+        // Redirect if response doesn't exist
+        // or if response can't be edited or deleted
+        if (!$response || !$this->helper->isResponseEditableDeletable($questionResponse)) {
+            $this->flash->addMessage('error', 'You can not edit this response.');
+
+            return $response->withRedirect($this->router->pathFor('question.show', [
+                'id' => $questionResponse->question->id
+            ]));
+        }
+
         // Validate form
         $validator = $this->validator->validate($request->getParams(), [
             'response' => v::notEmpty()
@@ -82,13 +112,14 @@ class ResponseController extends Controller
         }
 
         // Update response in DB
-        $questionResponse = QuestionResponse::find($args['id']);
         $questionResponse->text = $request->getParam('response');
         $questionResponse->save();
 
         $this->flash->addMessage('success', 'Response successfully edited.');
 
-        return $response->withRedirect($this->router->pathFor('question.show', ['id' => $questionResponse->question->id]));
+        return $response->withRedirect($this->router->pathFor('question.show', [
+            'id' => $questionResponse->question->id
+        ]));
     }
 
     /**
@@ -116,7 +147,18 @@ class ResponseController extends Controller
      */
     public function delete(Request $request, Response $response, array $args)
     {
-        $questionResponse = QuestionResponse::find($args['id']);
+        $questionResponse = QuestionResponse::with('user', 'question')->find($args['id']);
+
+        // Redirect if response doesn't exist
+        // or if response can't be edited or deleted
+        if (!$response || !$this->helper->isResponseEditableDeletable($questionResponse)) {
+            $this->flash->addMessage('error', 'You can not delete this response.');
+
+            return $response->withRedirect($this->router->pathFor('question.show', [
+                'id' => $questionResponse->question->id
+            ]));
+        }
+
         $questionId = $questionResponse->question->id;
 
         // Delete response
@@ -126,6 +168,8 @@ class ResponseController extends Controller
             $this->flash->addMessage('success', 'Response successfully deleted.');
         }
 
-        return $response->withRedirect($this->router->pathFor('question.show', ['id' => $questionId]));
+        return $response->withRedirect($this->router->pathFor('question.show', [
+            'id' => $questionResponse->question->id
+        ]));
     }
 }

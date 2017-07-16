@@ -43,3 +43,9 @@ $container['validator'] = function () {
 $container['upload'] = function () {
     return new \App\Services\FileUpload();
 };
+
+// Question helper
+$container['helper'] = function ($container) {
+    return new \App\Services\QuestionHelper($container);
+};
+

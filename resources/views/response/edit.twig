@@ -22,7 +22,8 @@
                     {% endif %}
                 </div>
 
-                <button type="submit" class="btn btn-default">Update</button>
+                <button type="submit" class="btn btn-default pull-right">Update</button>
+                <a href="{{ path_for('question.show', {id: questionResponse.question.id}) }}" class="btn btn-danger">Cancel</a>
             </form>
         </div>
     </div>
