@@ -52,6 +52,38 @@ class QuestionController extends Controller
     }
 
     /**
+     * Display question detailed view
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     */
+    public function show(Request $request, Response $response, array $args)
+    {
+        $question = Question::with(['user', 'responses' => function ($query) {
+            $query->orderBy('created_at', 'asc');
+        }])->withCount('responses')->find($args['id']);
+
+        $userRole = $this->auth->getUser()->role->name;
+
+        // Redirect if question doesn't exist
+        // or logged in user has role user and doesn't own accessed question
+        if (!$question || ($userRole == 'user' && !$this->helper->isQuestionOwner($question))) {
+            return $response->withRedirect($this->router->pathFor('question.list'));
+        }
+
+        // Question's last response
+        $lastResponse = $question->responses()->latest()->first();
+
+        return $this->view->render($response, 'question/show.twig', [
+            'question' => $question,
+            'lastResponse' => $lastResponse,
+            'showReplyForm' => $this->helper->enableReplyForm($question),
+            'showResponseFooter' => $this->helper->enableResponseEditDelete($question)
+        ]);
+    }
+
+    /**
      * Display create question form
      *
      * @param Request $request
@@ -275,37 +307,5 @@ class QuestionController extends Controller
         }
 
         return $response->withRedirect($this->router->pathFor('question.list'));
-    }
-
-    /**
-     * Display question detailed view
-     *
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     */
-    public function show(Request $request, Response $response, array $args)
-    {
-        $question = Question::with(['user', 'responses' => function ($query) {
-            $query->orderBy('created_at', 'asc');
-        }])->find($args['id']);
-
-        $userRole = $this->auth->getUser()->role->name;
-
-        // Redirect if question doesn't exist
-        // or logged in user has role user and doesn't own accessed question
-        if (!$question || ($userRole == 'user' && !$this->helper->isQuestionOwner($question))) {
-            return $response->withRedirect($this->router->pathFor('question.list'));
-        }
-
-        // Question's last response
-        $lastResponse = $question->responses()->latest()->first();
-
-        return $this->view->render($response, 'question/show.twig', [
-            'question' => $question,
-            'lastResponse' => $lastResponse,
-            'showReplyForm' => $this->helper->enableReplyForm($question),
-            'showResponseFooter' => $this->helper->enableResponseEditDelete($question)
-        ]);
     }
 }

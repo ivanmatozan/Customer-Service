@@ -13,11 +13,26 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <div>Author: {{ question.user.name }}</div>
-                    <div>Subject: <strong>{{ question.subject }}</strong></div>
+                <div class="panel-heading row">
+                    <!-- Don't show for own questions -->
+                    {% if auth.user.id != question.user.id  %}
+                        <div class="col-xs-12">
+                            Author: {{ question.user.name }}
+                        </div>
+                    {% endif %}
+                    <div class="col-xs-12">
+                        Subject: <strong>{{ question.subject }}</strong>
+                    </div>
                 </div>
+
                 <div class="panel-body">{{ question.text }}</div>
+
+                <div class="panel-footer">
+                    <a href="{{ path_for('question.list') }}" class="btn btn-sm btn-primary">Back</a>
+
+                    <!-- CRUD buttons partial -->
+                    {% include 'question/partials/question-footer-crud.twig' %}
+                </div>
             </div>
         </div>
     </div>
@@ -25,7 +40,7 @@
     <div class="row">
         <div class="col-xs-12">
             {% for response in question.responses %}
-                <div class="panel panel-{{ auth.user.id == response.user.id ? 'info' : 'warning' }}">
+                <div class="panel panel-{{ response.user.role.name == 'user' ? 'info' : 'warning' }}">
                     <div class="panel-heading">
                         <div>Author: {{ response.user.name }}</div>
                     </div>

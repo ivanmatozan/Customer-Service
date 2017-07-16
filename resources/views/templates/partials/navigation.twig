@@ -18,7 +18,7 @@
                     {% if auth.user.role.name == 'webadmin' %}
                         <li><a href="{{ path_for('user-management.show') }}">User Management</a></li>
                     {% else %}
-                        <li><a href="{{ path_for('question.list') }}">Questions</a></li>
+                        <li><a href="{{ path_for('question.list') }}">Question List</a></li>
                     {% endif %}
                 {% endif %}
             </ul>

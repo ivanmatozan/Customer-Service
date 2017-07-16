@@ -40,31 +40,23 @@
             {% if questions is not empty %}
                 {% for question in questions %}
                     <div class="panel panel-{{ question.closed ? 'success' : 'primary' }}">
-                        <div class="panel-heading">
+                        <div class="panel-heading row">
                             <!-- Don't show for own questions -->
                             {% if auth.user.id != question.user.id  %}
-                                <div>Author: {{ question.user.name }}</div>
+                                <div class="col-xs-12">
+                                    Author: {{ question.user.name }}
+                                </div>
                             {% endif %}
-                            <div>Subject: <strong>{{ question.subject }}</strong></div>
+                            <div class="col-xs-12">
+                                Subject: <strong>{{ question.subject }}</strong>
+                            </div>
                         </div>
                         <div class="panel-body">{{ question.text }}</div>
                         <div class="panel-footer">
                             <a href="{{ path_for('question.show', {id: question.id}) }}" class="btn btn-sm btn-default">Details</a>
 
-                            {% if auth.user.role.name == 'user' %}
-
-                                <!-- Show button only if question isn't already closed -->
-                                {% if not question.closed %}
-                                    <a href="{{ path_for('question.close', {id: question.id}) }}" class="btn btn-sm btn-success">Close</a>
-                                {% endif %}
-
-                                <!-- Show buttons only if question has no responses and isn't closed -->
-                                {% if question.responses_count == 0 and not question.closed %}
-                                    <a href="{{ path_for('question.edit', {id: question.id}) }}" class="btn btn-sm btn-warning">Edit</a>
-                                    <a href="{{ path_for('question.delete', {id: question.id}) }}" class="btn btn-sm btn-danger">Delete</a>
-                                {% endif %}
-
-                            {% endif %}
+                            <!-- CRUD buttons partial -->
+                            {% include 'question/partials/question-footer-crud.twig' %}
                         </div>
                     </div>
                 {% endfor %}

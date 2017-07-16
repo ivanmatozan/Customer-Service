@@ -9,3 +9,15 @@ body {
 .top-button-row {
     margin-bottom: 15px;
 }
+
+/* Remove .row margin and padding if it's inside .panel-heading */
+.panel-heading.row {
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Bread word if it's to long */
+.panel {
+    word-wrap: break-word
+}
