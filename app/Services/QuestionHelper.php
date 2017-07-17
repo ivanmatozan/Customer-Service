@@ -65,7 +65,7 @@ class QuestionHelper
     }
 
     /**
-     * Check if reponse can be edited or deleted
+     * Check if response edit|delete is enabled
      *
      * @param Question $question
      * @return bool
@@ -153,7 +153,6 @@ class QuestionHelper
         $lastResponse = $question->responses()->latest()->first();
 
         return (
-            $this->isResponseOwner($response) &&
             $this->enableResponseEditDelete($question) &&
             // Check if it's last response
             ($response->id == $lastResponse->id)
