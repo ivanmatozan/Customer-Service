@@ -102,6 +102,13 @@ class UserController extends Controller
             return $response->withRedirect($this->router->pathFor('user.login'));
         }
 
+        $rememberMe = $request->getParam('remember_me');
+
+        // If remember me is checked, create cookie
+        if (isset($rememberMe)) {
+            $this->auth->rememberLogin();
+        }
+
         return $response->withRedirect($this->router->pathFor('home'));
     }
 
