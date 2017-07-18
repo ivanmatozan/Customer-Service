@@ -39,8 +39,9 @@ Respect\Validation\Validator::with('App\\Validation\\Rules\\');
 require __DIR__ . '/container.php';
 
 // Attach Middleware
-$app->add(new \App\Middleware\ValidationErrorsMiddleware($container));
-$app->add(new \App\Middleware\OldFormDataMiddleware($container));
+$app->add(new \App\Middleware\ValidationErrorsMiddleware($container))
+    ->add(new \App\Middleware\OldFormDataMiddleware($container))
+    ->add(new \App\Middleware\TrailingSlashMiddleware());
 
 // Routes
 require __DIR__ . '/routes.php';
