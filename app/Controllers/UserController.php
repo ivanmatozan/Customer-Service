@@ -234,4 +234,44 @@ class UserController extends Controller
 
         return $response->withRedirect($this->router->pathFor('user.profile'));
     }
+
+    /**
+     * Show remove profile image confirmation
+     *
+     * @param Request $request
+     * @param Response $response
+     */
+    public function confirmDelete(Request $request, Response $response)
+    {
+        return $this->view->render($response, 'templates/confirmation.twig', [
+            'routeName' => 'user.remove-image',
+            'message' => 'Are you sure that you want to remove profile image?'
+        ]);
+    }
+
+    /**
+     * Remove profile image
+     *
+     * @param Request $request
+     * @param Response $response
+     */
+    public function removeImage(Request $request, Response $response)
+    {
+        // Currently logged in user
+        $user = $this->auth->getUser();
+
+        if ($user->image) {
+            // Delete file
+            $file = $this->upload_directory . $user->image;
+            unlink($file);
+
+            // Unset image in DB
+            $user->image = null;
+            $user->save();
+
+            $this->flash->addMessage('success', 'Profile image successfully removed.');
+        }
+
+        return $response->withRedirect($this->router->pathFor('user.profile'));
+    }
 }
