@@ -13,20 +13,20 @@
     <div class="row">
         <div class="col-xs-12">
             <form action="{{ path_for('user-management.edit', {id: user.id}) }}" method="post" class="form">
-                <div class="form-group {{ validationErrors.role ? 'has-error' : '' }}">
-                    <label for="role">Role</label>
-                    <select name="role" id="role" class="form-control">
-                        {% set selected = oldData.role ? oldData.role : user.role.id %}
-                        {% for role in roles %}
-                            <option value="{{ role.id }}" {% if role.id == selected %}selected{% endif %}>
-                                {{ role.name | capitalize }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                    {% if validationErrors.role %}
-                        <span class="help-block">{{ validationErrors.role | first }}</span>
-                    {% endif %}
-                </div>
+                {#<div class="form-group {{ validationErrors.role ? 'has-error' : '' }}">#}
+                    {#<label for="role">Role</label>#}
+                    {#<select name="role" id="role" class="form-control">#}
+                        {#{% set selected = oldData.role ? oldData.role : user.role.id %}#}
+                        {#{% for role in roles %}#}
+                            {#<option value="{{ role.id }}" {% if role.id == selected %}selected{% endif %}>#}
+                                {#{{ role.name | capitalize }}#}
+                            {#</option>#}
+                        {#{% endfor %}#}
+                    {#</select>#}
+                    {#{% if validationErrors.role %}#}
+                        {#<span class="help-block">{{ validationErrors.role | first }}</span>#}
+                    {#{% endif %}#}
+                {#</div>#}
 
                 <div class="form-group {{ validationErrors.name ? 'has-error' : '' }}">
                     <label for="name">Name</label>

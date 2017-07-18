@@ -125,8 +125,8 @@ class UserManagementController extends Controller
         $rules = [];
 
         // Validate role
-        $rules['role'] = v::notEmpty();
-        $user->role_id = $request->getParam('role');
+//        $rules['role'] = v::notEmpty();
+//        $user->role_id = $request->getParam('role');
 
         // Check if name is changed
         if ($request->getParam('name') !== $user->name) {
