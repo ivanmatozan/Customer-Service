@@ -198,7 +198,14 @@ class UserManagementController extends Controller
      */
     public function delete(Request $request, Response $response, $args)
     {
-        $user = User::find($args['id']);
+//        $user = User::find($args['id']);
+        $user = User::with('role')->withCount('responses')->find($args['id']);
+
+        if ($user->role->name == 'admin' && $user->responses_count > 0) {
+            $this->flash->addMessage('error', 'Unfortunately, it is not possible to delete administrator that is answered to some questions.');
+
+            return $response->withRedirect($this->router->pathFor('user-management.show'));
+        }
 
         // Delete user
         if ($request->getParam('yes') && $user) {
